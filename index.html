@@ -1,1 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meta Ads ROI — March 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.44.0/apexcharts.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f4f5f8;--white:#fff;--border:#e4e6ed;
+  --t1:#0d0f1a;--t2:#4b5563;--t3:#9ca3af;
+  --blue:#2563eb;--blue-l:#eff6ff;
+  --green:#16a34a;--green-l:#f0fdf4;--green-m:#86efac;
+  --sg:#059669;--sg-l:#ecfdf5;
+  --amber:#b45309;--amber-l:#fffbeb;--amber-m:#fde68a;
+  --red:#dc2626;--red-l:#fef2f2;
+  --purple:#7c3aed;--purple-l:#f5f3ff;
+  --shadow:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--t1);font-size:13px;line-height:1.5}
+.shell{display:flex;min-height:100vh}
+
+/* Sidebar */
+.sidebar{width:216px;flex-shrink:0;background:var(--white);border-right:1px solid var(--border);position:fixed;top:0;left:0;height:100vh;display:flex;flex-direction:column;z-index:100}
+.sb-logo{padding:20px 18px 16px;border-bottom:1px solid var(--border)}
+.sb-eyebrow{font-size:9px;font-weight:600;color:var(--t3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px}
+.sb-title{font-size:15px;font-weight:700;color:var(--t1)}
+.sb-month{font-size:11px;font-weight:500;color:var(--blue);background:var(--blue-l);padding:2px 8px;border-radius:20px;display:inline-block;margin-top:5px}
+.sb-sect{font-size:9px;font-weight:600;color:var(--t3);letter-spacing:.1em;text-transform:uppercase;padding:16px 18px 6px}
+.sb-client{display:flex;align-items:center;gap:10px;padding:9px 18px;cursor:pointer;font-size:12px;color:var(--t2);border-left:3px solid transparent;transition:all .12s;border:none;background:none;width:100%;text-align:left}
+.sb-client:hover{background:var(--bg);color:var(--t1)}
+.sb-client.active{background:var(--blue-l);color:var(--blue);font-weight:600;border-left:3px solid var(--blue)}
+.sb-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.sb-footer{margin-top:auto;padding:14px 18px;border-top:1px solid var(--border);font-size:10px;color:var(--t3);line-height:1.7}
+
+/* Main */
+.main{margin-left:216px;flex:1}
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;position:sticky;top:0;z-index:50}
+.ctab{display:flex;align-items:center;gap:8px;padding:15px 18px;cursor:pointer;font-size:13px;color:var(--t3);border-bottom:3px solid transparent;white-space:nowrap;transition:all .15s;background:none;border-top:none;border-left:none;border-right:none;font-family:'Inter',sans-serif}
+.ctab:hover{color:var(--t2)}
+.ctab.active{color:var(--blue);font-weight:600;border-bottom-color:var(--blue)}
+.tdot{width:7px;height:7px;border-radius:50%}
+
+/* Pages */
+.page{display:none;padding:28px 30px 60px}
+.page.active{display:block}
+
+/* Client header */
+.ch{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:14px}
+.cn{font-size:26px;font-weight:800;color:var(--t1);letter-spacing:-.5px;margin-bottom:4px}
+.cm{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--t3);flex-wrap:wrap}
+.mb{font-size:11px;font-weight:500;padding:3px 9px;border-radius:20px}
+.mb-a{background:var(--green-l);color:var(--green)}
+.mb-m{background:var(--blue-l);color:var(--blue)}
+.htots{display:flex;gap:10px;flex-wrap:wrap}
+.ht{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:10px 16px;text-align:right;box-shadow:var(--shadow)}
+.htl{font-size:10px;font-weight:500;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.htv{font-size:18px;font-weight:700;color:var(--t1)}
+
+/* Section label */
+.sl{font-size:10px;font-weight:600;color:var(--t3);letter-spacing:.09em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.sl::before{content:'';display:block;width:3px;height:13px;background:var(--blue);border-radius:2px}
+
+/* Benchmark bar */
+.bbar{display:flex;gap:14px;margin-bottom:18px;padding:10px 14px;background:var(--white);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow);flex-wrap:wrap;align-items:center;font-size:11px}
+.bi{display:flex;align-items:center;gap:6px;color:var(--t2)}
+.bsw{width:10px;height:10px;border-radius:50%}
+.brules{margin-left:6px;padding-left:8px;border-left:1px solid var(--border);font-size:10px;color:var(--t3)}
+
+/* Campaign grid */
+.cgrid{display:grid;gap:16px;margin-bottom:28px}
+.c2{grid-template-columns:1fr 1fr}
+.c3{grid-template-columns:1fr 1fr 1fr}
+.cc{background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+.cch{padding:16px 20px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.ccn{font-size:17px;font-weight:700;color:var(--t1)}
+.ccs{font-size:12px;color:var(--t3);margin-top:2px}
+.cst{font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px}
+.s-gr{background:var(--green-l);color:var(--green)}
+.s-sl{background:var(--sg-l);color:var(--sg)}
+.s-dc{background:var(--amber-l);color:var(--amber)}
+.s-bld{background:var(--purple-l);color:var(--purple)}
+.ccm{padding:16px 20px;display:grid;grid-template-columns:1fr 1fr;gap:12px 20px}
+.ml{font-size:9px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px;display:flex;align-items:center;gap:4px}
+.mv{font-size:20px;font-weight:700;color:var(--t1);line-height:1;margin-bottom:2px}
+.mv.xl{font-size:26px;letter-spacing:-.5px}
+.ms{font-size:10px;color:var(--t3)}
+.bd{width:6px;height:6px;border-radius:50%;display:inline-block;flex-shrink:0}
+.bd-gr{background:var(--green)}
+.bd-sl{background:var(--sg)}
+.bd-dc{background:var(--amber)}
+.bd-wk{background:var(--red)}
+.cnote{margin:0 20px 16px;padding:10px 12px;border-radius:8px;font-size:11px;line-height:1.65;border-left:3px solid}
+.n-gr{background:var(--green-l);border-left-color:var(--green);color:#166534}
+.n-am{background:var(--amber-l);border-left-color:#d97706;color:#92400e}
+.n-bl{background:var(--blue-l);border-left-color:var(--blue);color:#1e40af}
+
+/* Chart cards */
+.crow{display:grid;gap:16px;margin-bottom:20px}
+.card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px 22px;box-shadow:var(--shadow)}
+.ct{font-size:13px;font-weight:600;color:var(--t1);margin-bottom:2px}
+.cs{font-size:11px;color:var(--t3);margin-bottom:14px}
+
+/* Funnel */
+.fw{display:flex;flex-direction:column;gap:7px}
+.fr{display:flex;align-items:center;gap:10px}
+.flbl{font-size:11px;font-weight:500;color:var(--t2);width:120px;text-align:right;flex-shrink:0}
+.ftr{flex:1;height:28px;background:var(--bg);border-radius:5px;overflow:hidden}
+.ffi{height:100%;border-radius:5px;display:flex;align-items:center;padding-left:8px;font-size:10px;font-weight:600;min-width:30px}
+.fnum{font-size:11px;font-weight:600;color:var(--t1);width:80px;text-align:right;flex-shrink:0}
+.fpct{font-size:10px;color:var(--t3);width:42px;text-align:right;flex-shrink:0}
+
+/* Table */
+.tw{overflow-x:auto}
+.tbl{width:100%;border-collapse:collapse;font-size:11px;min-width:900px}
+.tbl th{font-size:9px;font-weight:600;color:var(--t3);letter-spacing:.07em;text-transform:uppercase;padding:9px 11px;text-align:left;border-bottom:2px solid var(--border);background:var(--bg);white-space:nowrap}
+.tbl th:not(:first-child){text-align:right}
+.tbl td{padding:9px 11px;border-bottom:1px solid var(--border);color:var(--t1);white-space:nowrap}
+.tbl td:not(:first-child){text-align:right}
+.tbl tr:hover td{background:#fafbfc}
+.tbl tr:last-child td{border-bottom:none}
+.cp{font-size:10px;font-weight:600;padding:2px 8px;border-radius:6px;display:inline-block}
+.p-rt{background:#eff6ff;color:#1d4ed8}
+.p-fo{background:#f0fdf4;color:#15803d}
+.p-nl{background:#f5f3ff;color:#6d28d9}
+.p-gr{background:var(--green-l);color:var(--green)}
+.p-sl{background:var(--sg-l);color:var(--sg)}
+.p-dc{background:var(--amber-l);color:var(--amber)}
+.p-wk{background:var(--red-l);color:var(--red)}
+.p-bl{background:var(--blue-l);color:var(--blue)}
+
+.divider{height:1px;background:var(--border);margin:24px 0}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-logo">
+    <div class="sb-eyebrow">Meta Ads</div>
+    <div class="sb-title">ROI Dashboard</div>
+    <div class="sb-month">March 2026</div>
+  </div>
+  <div class="sb-sect">Clients</div>
+  <button class="sb-client active" onclick="sw('flohom',this)"><span class="sb-dot" style="background:#2563eb"></span>FLOHOM</button>
+  <button class="sb-client" onclick="sw('paradise',this)"><span class="sb-dot" style="background:#16a34a"></span>Paradise Pointe</button>
+  <div class="sb-footer">Source: Promo Code Usage<br>March 2026 · Meta Ads + PMS</div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+<div class="topbar">
+  <button class="ctab active" id="tab-flohom" onclick="sw('flohom',null)"><span class="tdot" style="background:#2563eb"></span>FLOHOM</button>
+  <button class="ctab" id="tab-paradise" onclick="sw('paradise',null)"><span class="tdot" style="background:#16a34a"></span>Paradise Pointe</button>
+</div>
+
+<!-- ═══════════════ FLOHOM ═══════════════ -->
+<div class="page active" id="page-flohom">
+  <div class="ch">
+    <div>
+      <div class="cn">FLOHOM</div>
+      <div class="cm">
+        <span class="mb mb-a">Active</span>
+        <span class="mb mb-m">March 2026</span>
+        <span>3 campaigns running</span>
+      </div>
+    </div>
+    <div class="htots">
+      <div class="ht"><div class="htl">Total spend</div><div class="htv">$3,738</div></div>
+      <div class="ht"><div class="htl">Total revenue</div><div class="htv">$50,386</div></div>
+      <div class="ht"><div class="htl">Blended ROAS</div><div class="htv" style="color:var(--green)">13.5×</div></div>
+      <div class="ht"><div class="htl">Total bookings</div><div class="htv">43</div></div>
+    </div>
+  </div>
+
+  <div class="bbar">
+    <strong style="font-size:11px;color:var(--t2)">Benchmarks:</strong>
+    <div class="bi"><div class="bsw" style="background:var(--green)"></div>Great</div>
+    <div class="bi"><div class="bsw" style="background:var(--sg)"></div>Solid</div>
+    <div class="bi"><div class="bsw" style="background:var(--amber)"></div>Decent</div>
+    <div class="bi"><div class="bsw" style="background:var(--red)"></div>Needs attention</div>
+    <div class="brules">ROAS: &gt;3×=Decent &gt;5×=Solid &gt;10×=Great &nbsp;|&nbsp; Cost/Visit: &lt;$0.30=Decent &lt;$0.20=Solid &lt;$0.10=Great &nbsp;|&nbsp; CPL/Follower: &lt;$0.80=Decent &lt;$0.50=Solid &lt;$0.30=Great &nbsp;|&nbsp; % of ABV: &lt;40%=Decent &lt;25%=Solid &lt;15%=Great</div>
+  </div>
+
+  <div class="sl">Campaign breakdown</div>
+  <div class="cgrid c3">
+
+    <!-- RT -->
+    <div class="cc">
+      <div class="cch"><div><div class="ccn">Retargeting</div><div class="ccs">Spend: $2,478</div></div><span class="cst s-gr">Great</span></div>
+      <div class="ccm">
+        <div><div class="ml">Revenue</div><div class="mv">$31,050</div></div>
+        <div><div class="ml"><span class="bd bd-gr"></span>ROAS ★</div><div class="mv xl" style="color:var(--green)">12.5×</div><div class="ms">&gt;10× = Great</div></div>
+        <div><div class="ml">Impressions</div><div class="mv">197,865</div></div>
+        <div><div class="ml"><span class="bd bd-dc"></span>Cost / visit</div><div class="mv">$0.41</div><div class="ms">above $0.30 threshold</div></div>
+        <div><div class="ml">Profile visits</div><div class="mv">6,042</div></div>
+        <div><div class="ml">FB event bookings</div><div class="mv">27</div></div>
+        <div><div class="ml"><span class="bd bd-gr"></span>Cost / booking</div><div class="mv">$91.79</div><div class="ms">8% of avg booking value</div></div>
+        <div><div class="ml"><span class="bd bd-gr"></span>% of avg booking val</div><div class="mv">8.0%</div><div class="ms">&lt;15% = Great</div></div>
+      </div>
+      <div class="cnote n-gr">Primary revenue driver — 27 FB event bookings at $91.79 CPB. ROAS of 12.5× well above the 10× threshold. Cost/visit at $0.41 is the only metric above benchmark — retargeting audiences are inherently more competitive to reach.</div>
+    </div>
+
+    <!-- FOL -->
+    <div class="cc">
+      <div class="cch"><div><div class="ccn">Followers</div><div class="ccs">Spend: $641</div></div><span class="cst s-gr">Great</span></div>
+      <div class="ccm">
+        <div><div class="ml">Revenue (email match)</div><div class="mv">$19,336</div></div>
+        <div><div class="ml"><span class="bd bd-gr"></span>ROAS ★</div><div class="mv xl" style="color:var(--green)">30.2×</div><div class="ms">&gt;10× = Great</div></div>
+        <div><div class="ml">Impressions</div><div class="mv">79,908</div></div>
+        <div><div class="ml"><span class="bd bd-gr"></span>Cost / visit</div><div class="mv">$0.13</div><div class="ms">&lt;$0.20 = Solid ✓</div></div>
+        <div><div class="ml">Profile visits</div><div class="mv">4,910</div></div>
+        <div><div class="ml">New followers</div><div class="mv">2,362</div></div>
+        <div><div class="ml"><span class="bd bd-gr"></span>Cost / follower</div><div class="mv">$0.27</div><div class="ms">&lt;$0.30 = Great ✓</div></div>
+        <div><div class="ml">IG bio leads</div><div class="mv">1,101</div></div>
+        <div><div class="ml">Email matched bookings</div><div class="mv">16</div></div>
+        <div><div class="ml"><span class="bd bd-gr"></span>Cost / booking</div><div class="mv">$40.05</div><div class="ms">3.5% of avg booking val</div></div>
+        <div><div class="ml">Avg booking value</div><div class="mv">—</div></div>
+        <div><div class="ml"><span class="bd bd-gr"></span>% of avg booking val</div><div class="mv">3.5%</div><div class="ms">&lt;15% = Great ✓</div></div>
+      </div>
+      <div class="cnote n-gr">Exceptional — $0.27/follower and $0.13/visit both in "Great" territory. 1,101 IG bio leads generated. Feeds the retargeting pool that drives the $31K RT revenue. 30.2× ROAS reflects strong audience-to-booking conversion.</div>
+    </div>
+
+    <!-- NL -->
+    <div class="cc">
+      <div class="cch"><div><div class="ccn">New Leads</div><div class="ccs">Spend: $619</div></div><span class="cst s-bld">Building</span></div>
+      <div class="ccm">
+        <div><div class="ml">Revenue (direct)</div><div class="mv">—</div></div>
+        <div><div class="ml"><span class="bd bd-gr"></span>Blended ROAS ★</div><div class="mv xl" style="color:var(--green)">13.5×</div><div class="ms">blended all campaigns</div></div>
+        <div><div class="ml">Impressions</div><div class="mv">54,830</div></div>
+        <div><div class="ml"><span class="bd bd-dc"></span>Cost / visit</div><div class="mv">$0.33</div><div class="ms">just above $0.30 decent</div></div>
+        <div><div class="ml">Profile visits</div><div class="mv">1,904</div></div>
+        <div><div class="ml">New leads captured</div><div class="mv">683</div></div>
+        <div><div class="ml"><span class="bd bd-dc"></span>Cost / lead</div><div class="mv">$0.91</div><div class="ms">slightly above $0.80 decent</div></div>
+        <div><div class="ml">IG bio leads</div><div class="mv">1,101</div></div>
+        <div><div class="ml">Avg booking value</div><div class="mv">$1,150</div></div>
+        <div><div class="ml">% of avg booking val</div><div class="mv">—</div></div>
+      </div>
+      <div class="cnote n-am">Cold audience — no direct revenue match this month; converts via RT in 30–60 days. CPL at $0.91 slightly above $0.80 benchmark. 683 new leads added to the retargeting pool. Creative refresh recommended to push CPL under $0.80.</div>
+    </div>
+  </div>
+
+  <div class="sl">Performance charts</div>
+  <div class="crow c3">
+    <div class="card"><div class="ct">ROAS by campaign</div><div class="cs">vs. 3× / 5× / 10× benchmarks</div><div id="fl-roas"></div></div>
+    <div class="card"><div class="ct">Spend vs. attributed revenue</div><div class="cs">March 2026 · all campaigns</div><div id="fl-spend"></div></div>
+    <div class="card"><div class="ct">Impressions vs. profile visits</div><div class="cs">Reach efficiency by campaign</div><div id="fl-imp"></div></div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="sl">Funnel analysis · March 2026</div>
+  <div class="crow c2">
+    <div class="card">
+      <div class="ct">Top of funnel — awareness to engagement</div>
+      <div class="cs">All campaigns combined · drop-off at each stage</div>
+      <div class="fw" style="margin-top:14px">
+        <div class="fr"><div class="flbl">Impressions</div><div class="ftr"><div class="ffi" style="width:100%;background:#bfdbfe;color:#1e40af">332,603</div></div><div class="fnum">332,603</div><div class="fpct"></div></div>
+        <div class="fr"><div class="flbl">Profile visits</div><div class="ftr"><div class="ffi" style="width:37%;background:#bfdbfe;color:#1e40af">12,856</div></div><div class="fnum">12,856</div><div class="fpct" style="color:var(--red)">−96%</div></div>
+        <div class="fr"><div class="flbl">New leads</div><div class="ftr"><div class="ffi" style="width:18%;background:var(--green-m);color:#166534">3,045</div></div><div class="fnum">3,045</div><div class="fpct" style="color:var(--red)">−76%</div></div>
+        <div class="fr"><div class="flbl">IG bio leads</div><div class="ftr"><div class="ffi" style="width:10%;background:var(--green-m);color:#166534">1,101</div></div><div class="fnum">1,101</div><div class="fpct">−64%</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">Bottom of funnel — leads to revenue</div>
+      <div class="cs">Conversion to confirmed bookings and revenue</div>
+      <div class="fw" style="margin-top:14px">
+        <div class="fr"><div class="flbl">Total leads</div><div class="ftr"><div class="ffi" style="width:100%;background:#d1fae5;color:#065f46">3,045</div></div><div class="fnum">3,045</div><div class="fpct"></div></div>
+        <div class="fr"><div class="flbl">IG bio leads</div><div class="ftr"><div class="ffi" style="width:70%;background:#d1fae5;color:#065f46">1,101</div></div><div class="fnum">1,101</div><div class="fpct">36%</div></div>
+        <div class="fr"><div class="flbl">Email bookings</div><div class="ftr"><div class="ffi" style="width:22%;background:var(--amber-m);color:#78350f">16</div></div><div class="fnum">16</div><div class="fpct" style="color:var(--red)">−99%</div></div>
+        <div class="fr"><div class="flbl">FB event bookings</div><div class="ftr"><div class="ffi" style="width:36%;background:var(--amber-m);color:#78350f">27</div></div><div class="fnum">27</div><div class="fpct">RT</div></div>
+        <div class="fr"><div class="flbl">Total revenue</div><div class="ftr"><div class="ffi" style="width:16%;background:#6ee7b7;color:#064e3b">$50,386</div></div><div class="fnum">$50,386</div><div class="fpct"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sl">All metrics — full summary table</div>
+  <div class="card" style="padding:0;overflow:hidden">
+    <div class="tw"><table class="tbl">
+      <thead><tr>
+        <th>Campaign</th><th>Spend</th><th>Impressions</th><th>Visits</th><th>Cost/Visit</th>
+        <th>Leads/Followers</th><th>Cost/Lead·Follower</th><th>IG Bio Leads</th>
+        <th>Bookings (email)</th><th>Bookings (FB)</th><th>Cost/Booking</th>
+        <th>Avg BV</th><th>% of BV</th><th>Revenue</th><th>ROAS</th><th>Blended ROAS</th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="cp p-rt">Retargeting</span></td><td>$2,478</td><td>197,865</td><td>6,042</td>
+          <td><span class="cp p-dc">$0.41</span></td><td>—</td><td>—</td><td>—</td><td>—</td><td>27</td>
+          <td><span class="cp p-gr">$91.79</span></td><td>—</td><td><span class="cp p-gr">8.0%</span></td>
+          <td>$31,050</td><td><span class="cp p-gr">12.5×</span></td><td>—</td>
+        </tr>
+        <tr>
+          <td><span class="cp p-fo">Followers</span></td><td>$641</td><td>79,908</td><td>4,910</td>
+          <td><span class="cp p-sl">$0.13</span></td><td>2,362</td><td><span class="cp p-gr">$0.27</span></td>
+          <td>1,101</td><td>16</td><td>—</td><td><span class="cp p-gr">$40.05</span></td>
+          <td>—</td><td><span class="cp p-gr">3.5%</span></td>
+          <td>$19,336</td><td><span class="cp p-gr">30.2×</span></td><td>—</td>
+        </tr>
+        <tr>
+          <td><span class="cp p-nl">New Leads</span></td><td>$619</td><td>54,830</td><td>1,904</td>
+          <td><span class="cp p-dc">$0.33</span></td><td>683</td><td><span class="cp p-dc">$0.91</span></td>
+          <td>1,101</td><td>—</td><td>—</td><td>—</td>
+          <td>$1,150</td><td>—</td><td>—</td><td>—</td><td><span class="cp p-gr">13.5×</span></td>
+        </tr>
+      </tbody>
+    </table></div>
+  </div>
+</div><!-- /flohom -->
+
+<!-- ═══════════════ PARADISE POINTE ═══════════════ -->
+<div class="page" id="page-paradise">
+  <div class="ch">
+    <div>
+      <div class="cn">Paradise Pointe</div>
+      <div class="cm">
+        <span class="mb mb-a">Active</span>
+        <span class="mb mb-m">March 2026</span>
+        <span>3 campaigns running</span>
+      </div>
+    </div>
+    <div class="htots">
+      <div class="ht"><div class="htl">Total spend</div><div class="htv">$2,472</div></div>
+      <div class="ht"><div class="htl">Total revenue</div><div class="htv">$109,715</div></div>
+      <div class="ht"><div class="htl">Blended ROAS</div><div class="htv" style="color:var(--green)">44.4×</div></div>
+      <div class="ht"><div class="htl">Total bookings</div><div class="htv">118</div></div>
+    </div>
+  </div>
+
+  <div class="bbar">
+    <strong style="font-size:11px;color:var(--t2)">Benchmarks:</strong>
+    <div class="bi"><div class="bsw" style="background:var(--green)"></div>Great</div>
+    <div class="bi"><div class="bsw" style="background:var(--sg)"></div>Solid</div>
+    <div class="bi"><div class="bsw" style="background:var(--amber)"></div>Decent</div>
+    <div class="bi"><div class="bsw" style="background:var(--red)"></div>Needs attention</div>
+    <div class="brules">ROAS: &gt;3×=Decent &gt;5×=Solid &gt;10×=Great &nbsp;|&nbsp; Cost/Visit: &lt;$0.30=Decent &lt;$0.20=Solid &lt;$0.10=Great &nbsp;|&nbsp; CPL/Follower: &lt;$0.80=Decent &lt;$0.50=Solid &lt;$0.30=Great &nbsp;|&nbsp; % of ABV: &lt;40%=Decent &lt;25%=Solid &lt;15%=Great</div>
+  </div>
+
+  <div class="sl">Campaign breakdown</div>
+  <div class="cgrid c3">
+
+    <!-- FOL -->
+    <div class="cc">
+      <div class="cch"><div><div class="ccn">Followers</div><div class="ccs">Spend: $616</div></div><span class="cst s-gr">Great</span></div>
+      <div class="ccm">
+        <div><div class="ml">Revenue (email match)</div><div class="mv">$66,495</div></div>
+        <div><div class="ml"><span class="bd bd-gr"></span>ROAS ★</div><div class="mv xl" style="color:var(--green)">108×</div><div class="ms">&gt;10× = Great ✓</div></div>
+        <div><div class="ml">Impressions</div><div class="mv">62,596</div></div>
+        <div><div class="ml"><span class="bd bd-sl"></span>Cost / visit</div><div class="mv">$0.17</div><div class="ms">&lt;$0.20 = Solid ✓</div></div>
+        <div><div class="ml">Profile visits</div><div class="mv">3,626</div></div>
+        <div><div class="ml">New followers</div><div class="mv">1,853</div></div>
+        <div><div class="ml"><span class="bd bd-dc"></span>Cost / follower</div><div class="mv">$0.33</div><div class="ms">&lt;$0.30 Great · just above</div></div>
+        <div><div class="ml">IG bio leads</div><div class="mv">1,671</div></div>
+        <div><div class="ml">Email matched bookings</div><div class="mv">68</div></div>
+        <div><div class="ml"><span class="bd bd-gr"></span>Cost / booking</div><div class="mv">$9.05</div><div class="ms">0.96% of avg booking val</div></div>
+        <div><div class="ml">Avg booking value</div><div class="mv">$944</div></div>
+        <div><div class="ml"><span class="bd bd-gr"></span>% of avg booking val</div><div class="mv">0.96%</div><div class="ms">&lt;15% = Great ✓</div></div>
+      </div>
+      <div class="cnote n-gr">Strongest followers campaign in the portfolio — 108× ROAS with 68 email-matched bookings. $9.05 CPB is extraordinary. 1,671 IG bio leads at $0.37 each. This campaign alone generated $66K in attributed revenue on $616 spend.</div>
+    </div>
+
+    <!-- NL -->
+    <div class="cc">
+      <div class="cch"><div><div class="ccn">New Leads</div><div class="ccs">Spend: $621</div></div><span class="cst s-bld">Building</span></div>
+      <div class="ccm">
+        <div><div class="ml">Revenue (direct)</div><div class="mv">$740</div></div>
+        <div><div class="ml"><span class="bd bd-wk"></span>ROAS ★</div><div class="mv xl" style="color:var(--red)">1.2×</div><div class="ms">cold traffic — converts via RT</div></div>
+        <div><div class="ml">Impressions</div><div class="mv">80,373</div></div>
+        <div><div class="ml"><span class="bd bd-sl"></span>Cost / visit</div><div class="mv">$0.23</div><div class="ms">&lt;$0.30 = Decent ✓</div></div>
+        <div><div class="ml">Profile visits</div><div class="mv">2,729</div></div>
+        <div><div class="ml">New leads captured</div><div class="mv">743</div></div>
+        <div><div class="ml"><span class="bd bd-dc"></span>Cost / lead</div><div class="mv">$0.84</div><div class="ms">slightly above $0.80 decent</div></div>
+        <div><div class="ml">Email matched bookings</div><div class="mv">1</div></div>
+        <div><div class="ml">Cost / booking</div><div class="mv">$620.86</div></div>
+        <div><div class="ml"><span class="bd bd-wk"></span>% of avg booking val</div><div class="mv">66%</div><div class="ms">cold traffic — expected high</div></div>
+      </div>
+      <div class="cnote n-am">Cold traffic — 1.2× direct ROAS is expected for new audience acquisition. These 743 leads enter the RT funnel in 30–60 days. CPL at $0.84 is just above the $0.80 decent threshold — creative optimisation would push this into "Decent" cleanly.</div>
+    </div>
+
+    <!-- RT -->
+    <div class="cc">
+      <div class="cch"><div><div class="ccn">Retargeting</div><div class="ccs">Spend: $1,236</div></div><span class="cst s-gr">Great</span></div>
+      <div class="ccm">
+        <div><div class="ml">Revenue</div><div class="mv">$42,480</div></div>
+        <div><div class="ml"><span class="bd bd-gr"></span>ROAS ★</div><div class="mv xl" style="color:var(--green)">34.4×</div><div class="ms">&gt;10× = Great ✓</div></div>
+        <div><div class="ml">Impressions</div><div class="mv">114,419</div></div>
+        <div><div class="ml"><span class="bd bd-dc"></span>Cost / visit</div><div class="mv">$0.40</div><div class="ms">above $0.30 threshold</div></div>
+        <div><div class="ml">Profile visits</div><div class="mv">3,112</div></div>
+        <div><div class="ml">FB event bookings</div><div class="mv">45</div></div>
+        <div><div class="ml"><span class="bd bd-gr"></span>Cost / booking</div><div class="mv">$27.46</div><div class="ms">2.9% of avg booking val</div></div>
+        <div><div class="ml"><span class="bd bd-gr"></span>% of avg booking val</div><div class="mv">2.9%</div><div class="ms">&lt;15% = Great ✓</div></div>
+      </div>
+      <div class="cnote n-gr">34.4× ROAS on $1,236 — the conversion closer. CPB has dropped from $306 at launch (Oct 2025) to $27 today as the audience pool has grown. 45 FB event bookings confirmed. Recommend increasing budget — audience pool (24K+ leads) supports it.</div>
+    </div>
+  </div>
+
+  <div class="sl">Performance charts</div>
+  <div class="crow c3">
+    <div class="card"><div class="ct">ROAS by campaign</div><div class="cs">vs. 3× / 5× / 10× benchmarks</div><div id="pp-roas"></div></div>
+    <div class="card"><div class="ct">Spend vs. attributed revenue</div><div class="cs">March 2026 · all campaigns</div><div id="pp-spend"></div></div>
+    <div class="card"><div class="ct">Impressions vs. profile visits</div><div class="cs">Reach efficiency by campaign</div><div id="pp-imp"></div></div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="sl">Funnel analysis · March 2026</div>
+  <div class="crow c2">
+    <div class="card">
+      <div class="ct">Top of funnel — awareness to engagement</div>
+      <div class="cs">All campaigns combined · drop-off at each stage</div>
+      <div class="fw" style="margin-top:14px">
+        <div class="fr"><div class="flbl">Impressions</div><div class="ftr"><div class="ffi" style="width:100%;background:#bfdbfe;color:#1e40af">257,388</div></div><div class="fnum">257,388</div><div class="fpct"></div></div>
+        <div class="fr"><div class="flbl">Profile visits</div><div class="ftr"><div class="ffi" style="width:37%;background:#bfdbfe;color:#1e40af">9,467</div></div><div class="fnum">9,467</div><div class="fpct" style="color:var(--red)">−96%</div></div>
+        <div class="fr"><div class="flbl">New leads</div><div class="ftr"><div class="ffi" style="width:19%;background:var(--green-m);color:#166534">2,596</div></div><div class="fnum">2,596</div><div class="fpct" style="color:var(--red)">−73%</div></div>
+        <div class="fr"><div class="flbl">IG bio leads</div><div class="ftr"><div class="ffi" style="width:26%;background:var(--green-m);color:#166534">1,671</div></div><div class="fnum">1,671</div><div class="fpct">−36%</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">Bottom of funnel — leads to revenue</div>
+      <div class="cs">IG bio leads → bookings → revenue</div>
+      <div class="fw" style="margin-top:14px">
+        <div class="fr"><div class="flbl">IG bio leads</div><div class="ftr"><div class="ffi" style="width:100%;background:#d1fae5;color:#065f46">1,671</div></div><div class="fnum">1,671</div><div class="fpct"></div></div>
+        <div class="fr"><div class="flbl">Email bookings</div><div class="ftr"><div class="ffi" style="width:68%;background:var(--amber-m);color:#78350f">69</div></div><div class="fnum">69</div><div class="fpct" style="color:var(--green)">4.1%</div></div>
+        <div class="fr"><div class="flbl">FB event bookings</div><div class="ftr"><div class="ffi" style="width:38%;background:var(--amber-m);color:#78350f">45</div></div><div class="fnum">45</div><div class="fpct">RT</div></div>
+        <div class="fr"><div class="flbl">Total revenue</div><div class="ftr"><div class="ffi" style="width:20%;background:#6ee7b7;color:#064e3b">$109,715</div></div><div class="fnum">$109,715</div><div class="fpct"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sl">All metrics — full summary table</div>
+  <div class="card" style="padding:0;overflow:hidden">
+    <div class="tw"><table class="tbl">
+      <thead><tr>
+        <th>Campaign</th><th>Spend</th><th>Impressions</th><th>Visits</th><th>Cost/Visit</th>
+        <th>Leads/Followers</th><th>Cost/Lead·Follower</th><th>IG Bio Leads</th>
+        <th>Bookings (email)</th><th>Bookings (FB)</th><th>Cost/Booking</th>
+        <th>Avg BV</th><th>% of BV</th><th>Revenue</th><th>ROAS</th><th>Blended ROAS</th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="cp p-fo">Followers</span></td><td>$616</td><td>62,596</td><td>3,626</td>
+          <td><span class="cp p-sl">$0.17</span></td><td>1,853</td><td><span class="cp p-dc">$0.33</span></td>
+          <td>1,671</td><td>68</td><td>—</td><td><span class="cp p-gr">$9.05</span></td>
+          <td>$944</td><td><span class="cp p-gr">0.96%</span></td>
+          <td>$66,495</td><td><span class="cp p-gr">108×</span></td><td><span class="cp p-gr">44.4×</span></td>
+        </tr>
+        <tr>
+          <td><span class="cp p-nl">New Leads</span></td><td>$621</td><td>80,373</td><td>2,729</td>
+          <td><span class="cp p-sl">$0.23</span></td><td>743</td><td><span class="cp p-dc">$0.84</span></td>
+          <td>—</td><td>1</td><td>—</td><td>$620.86</td>
+          <td>—</td><td><span class="cp p-wk">66%</span></td>
+          <td>$740</td><td><span class="cp p-wk">1.2×</span></td><td>—</td>
+        </tr>
+        <tr>
+          <td><span class="cp p-rt">Retargeting</span></td><td>$1,236</td><td>114,419</td><td>3,112</td>
+          <td><span class="cp p-dc">$0.40</span></td><td>—</td><td>—</td>
+          <td>—</td><td>—</td><td>45</td><td><span class="cp p-gr">$27.46</span></td>
+          <td>—</td><td><span class="cp p-gr">2.9%</span></td>
+          <td>$42,480</td><td><span class="cp p-gr">34.4×</span></td><td>—</td>
+        </tr>
+      </tbody>
+    </table></div>
+  </div>
+</div><!-- /paradise -->
+
+</div><!-- /main -->
+</div><!-- /shell -->
+
+<script>
+function sw(id, sbEl) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.ctab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.sb-client').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.getElementById('tab-' + id).classList.add('active');
+  if (sbEl) sbEl.classList.add('active');
+}
+
+function roas(id, cats, vals) {
+  new ApexCharts(document.getElementById(id), {
+    chart: { type: 'bar', height: 220, toolbar: { show: false }, fontFamily: 'Inter, sans-serif' },
+    series: [{ name: 'ROAS', data: vals }],
+    xaxis: { categories: cats, labels: { style: { fontSize: '11px' } } },
+    yaxis: { labels: { formatter: v => v + '×', style: { fontSize: '11px' } } },
+    colors: vals.map(v => v >= 10 ? '#16a34a' : v >= 5 ? '#059669' : v >= 3 ? '#b45309' : '#dc2626'),
+    plotOptions: { bar: { borderRadius: 5, distributed: true, columnWidth: '52%' } },
+    annotations: {
+      yaxis: [
+        { y: 3, borderColor: '#b45309', label: { text: 'Decent 3×', style: { fontSize: '9px', color: '#b45309', background: '#fffbeb' } } },
+        { y: 5, borderColor: '#059669', label: { text: 'Solid 5×', style: { fontSize: '9px', color: '#059669', background: '#ecfdf5' } } },
+        { y: 10, borderColor: '#16a34a', label: { text: 'Great 10×', style: { fontSize: '9px', color: '#16a34a', background: '#f0fdf4' } } }
+      ]
+    },
+    legend: { show: false },
+    dataLabels: { enabled: true, formatter: v => v + '×', style: { fontSize: '11px', fontWeight: 600 } },
+    grid: { borderColor: '#f3f4f6' },
+    tooltip: { y: { formatter: v => v + '×' } }
+  }).render();
+}
+
+function spendRev(id, cats, spends, revs) {
+  new ApexCharts(document.getElementById(id), {
+    chart: { type: 'bar', height: 220, toolbar: { show: false }, fontFamily: 'Inter, sans-serif' },
+    series: [{ name: 'Spend', data: spends }, { name: 'Revenue', data: revs }],
+    xaxis: { categories: cats, labels: { style: { fontSize: '11px' } } },
+    yaxis: { labels: { formatter: v => '$' + (v >= 1000 ? (v / 1000).toFixed(0) + 'K' : v) } },
+    colors: ['#bfdbfe', '#86efac'],
+    plotOptions: { bar: { borderRadius: 4, columnWidth: '65%' } },
+    dataLabels: { enabled: false },
+    legend: { position: 'bottom', fontSize: '11px' },
+    grid: { borderColor: '#f3f4f6' },
+    tooltip: { y: { formatter: v => '$' + v.toLocaleString() } }
+  }).render();
+}
+
+function impVis(id, cats, imps, visits) {
+  new ApexCharts(document.getElementById(id), {
+    chart: { type: 'bar', height: 220, toolbar: { show: false }, fontFamily: 'Inter, sans-serif' },
+    series: [{ name: 'Impressions', data: imps }, { name: 'Profile visits', data: visits }],
+    xaxis: { categories: cats, labels: { style: { fontSize: '11px' } } },
+    yaxis: { labels: { formatter: v => (v >= 1000 ? (v / 1000).toFixed(0) + 'K' : v) } },
+    colors: ['#c7d2fe', '#4f46e5'],
+    plotOptions: { bar: { borderRadius: 4, columnWidth: '65%' } },
+    dataLabels: { enabled: false },
+    legend: { position: 'bottom', fontSize: '11px' },
+    grid: { borderColor: '#f3f4f6' },
+    tooltip: { y: { formatter: v => v.toLocaleString() } }
+  }).render();
+}
+
+// FLOHOM charts
+roas('fl-roas', ['Retargeting', 'Followers', 'New Leads (blended)'], [12.5, 30.2, 13.5]);
+spendRev('fl-spend', ['Retargeting', 'Followers', 'New Leads'], [2478, 641, 619], [31050, 19336, 0]);
+impVis('fl-imp', ['Retargeting', 'Followers', 'New Leads'], [197865, 79908, 54830], [6042, 4910, 1904]);
+
+// Paradise Pointe charts
+roas('pp-roas', ['Followers', 'New Leads', 'Retargeting'], [108, 1.2, 34.4]);
+spendRev('pp-spend', ['Followers', 'New Leads', 'Retargeting'], [616, 621, 1236], [66495, 740, 42480]);
+impVis('pp-imp', ['Followers', 'New Leads', 'Retargeting'], [62596, 80373, 114419], [3626, 2729, 3112]);
+</script>
+</body>
+</html>
 
